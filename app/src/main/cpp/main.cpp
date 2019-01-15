@@ -25,8 +25,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm,void* reser)
 
     env->RegisterNatives(clazz,methods,1);
 
-
-
     return 0;
 }
 

@@ -14,7 +14,7 @@ bool ::ProxyApplication::registerNativeMethod(JNIEnv* env)
 {
     auto clazz = env->FindClass("com/aly/roger/shell/ProxyApplication");
     JNINativeMethod methods[] = {
-            {"attachBaseContext","(Landroid/content/Context;)V",(void *)attachBaseContext}
+            { "attachBaseContext","(Landroid/content/Context;)V",(void *)attachBaseContext }
     };
 
     env->RegisterNatives(clazz,methods,1);
