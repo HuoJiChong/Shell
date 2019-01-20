@@ -8,6 +8,7 @@
 #include <jni.h>
 #include "string"
 #include "AndroidDef/vm/oo/Object.h"
+#include "vector"
 
 class VarArgs;
 
@@ -246,11 +247,11 @@ namespace JniInfo{
     JniInfo_CALL_NONVIRT_TYPE(void,Void);
 
 #define JniInfo_CALL_STATIC_TYPE(_jtype,_jname)                     \
-    _jtype CallStatic##_jname##Method(JNIEnv* env,jobject obj,    \
+    _jtype CallStatic##_jname##Method(JNIEnv* env,   \
         const char* clazzSig,const char* name, const char* sig,...);   \
-    _jtype CallStatic##_jname##MethodV(JNIEnv* env,jobject obj,    \
+    _jtype CallStatic##_jname##MethodV(JNIEnv* env,    \
         const char* clazzSig,const char* name, const char* sig,va_list args);    \
-    _jtype CallStatic##_jname##MethodA(JNIEnv* env,jobject obj,    \
+    _jtype CallStatic##_jname##MethodA(JNIEnv* env,    \
         const char* clazzSig,const char* name, const char* sig,jvalue* args);
 
     JniInfo_CALL_STATIC_TYPE(jobject,Object);
@@ -265,9 +266,9 @@ namespace JniInfo{
     JniInfo_CALL_STATIC_TYPE(void,Void);
 
 #define JniInfo_GetFIELD(_jtype,_jname)                     \
-    _jtype Get##_jname##Method(JNIEnv* env,jobject obj,    \
+    _jtype Get##_jname##FIELD(JNIEnv* env,jobject obj,    \
         const char* name, const char* sig);        \
-    _jtype GetStatic##_jname##MethodV(JNIEnv* env,jobject obj,    \
+    _jtype GetStatic##_jname##FIELD(JNIEnv* env,jobject obj,    \
         const char* clazzSig,const char* name, const char* sig);
 
     JniInfo_GetFIELD(jobject,Object);
@@ -279,15 +280,16 @@ namespace JniInfo{
     JniInfo_GetFIELD(jlong ,Long);
     JniInfo_GetFIELD(jfloat ,Float);
     JniInfo_GetFIELD(jdouble ,Double);
-
+    JniInfo_GetFIELD(jobjectArray ,ObjectArray);
 
 #define JniInfo_SetFIELD(_jtype,_jname)                     \
-    _jtype Set##_jname##Method(JNIEnv* env,jobject obj,    \
-        const char* name, const char* sig);        \
-    _jtype SetStatic##_jname##MethodV(JNIEnv* env,jobject obj,    \
-        const char* clazzSig,const char* name, const char* sig);
+    _jtype Set##_jname##FIELD(JNIEnv* env,jobject obj,    \
+        const char* name, const char* sig,_jtype value);        \
+    _jtype SetStatic##_jname##FIELD(JNIEnv* env,jobject obj,    \
+        const char* clazzSig,const char* name, const char* sig,_jtype value);
 
-    JniInfo_SetFIELD(jobject,Object);
+//    jobject SetObjectFIELD(JNIEnv *env, jobject obj, const char name[12], const char sig[37],
+//                               jobjectArray pArray);
     JniInfo_SetFIELD(jboolean,Boolean);
     JniInfo_SetFIELD(jbyte ,Byte);
     JniInfo_SetFIELD(jchar ,Char);
@@ -296,6 +298,7 @@ namespace JniInfo{
     JniInfo_SetFIELD(jlong ,Long);
     JniInfo_SetFIELD(jfloat ,Float);
     JniInfo_SetFIELD(jdouble ,Double);
+    JniInfo_SetFIELD(jobjectArray ,Object);
 
 }
 

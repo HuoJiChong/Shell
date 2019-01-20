@@ -59,7 +59,7 @@ public class ProxyApplication extends Application {
 //        File dexFile = FileManager.releaseAssetsFile(this,"encrypt.dex",srcDex,null);
 //        DexClassLoader cl = new DexClassLoader(srcDex,getDir("shell_oat",MODE_PRIVATE).getAbsolutePath(),
 //                getApplicationInfo().nativeLibraryDir,getClassLoader());
-//
+
 //        Object currentActivityThread = JavaRef.invokeStaticMethod(ActivityThreadName,"currentActivityThread", new Class[]{},new Object[]{});
 //
 //        HashMap mPackages = (HashMap)JavaRef.getFieldObject(ActivityThreadName,"mPackages",currentActivityThread);
