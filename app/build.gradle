@@ -9,13 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        externalNativeBuild{
-            cmake{
+        externalNativeBuild {
+            cmake {
                 cppFlags "-std=c++11"
             }
         }
-        ndk{
-            abiFilters "armeabi-v7a","x86","x86_64"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "x86_64"
         }
     }
     buildTypes {
@@ -24,15 +24,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    externalNativeBuild{
-        cmake{
+    externalNativeBuild {
+        cmake {
             path "CMakeLists.txt"
         }
     }
+    buildToolsVersion '26.0.2'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

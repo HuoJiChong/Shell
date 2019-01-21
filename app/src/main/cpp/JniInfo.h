@@ -6,9 +6,10 @@
 #define SHELL_JNIINFO_H
 
 #include <jni.h>
-#include "string"
+#include <string>
 #include "AndroidDef/vm/oo/Object.h"
-#include "vector"
+#include <vector>
+#include <sys/system_properties.h>
 
 class VarArgs;
 

@@ -7,9 +7,10 @@
 
 #include <sys/types.h>
 #include <jni.h>
+#include <androidfw/AssetManager.h>
 
 namespace JAsset{
-    bool releaseEncryptFileIntoCache(AAsetManager* mgr,const char* fileName,mode_t  mode);
+    bool releaseEncryptFileIntoCache(AAssetManager* mgr,const char* fileName,mode_t  mode);
 
     char * getAssetManagerFromCtx(JNIEnv *pEnv, jobject pJobject);
 

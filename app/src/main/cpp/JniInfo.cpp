@@ -104,7 +104,7 @@ bool JniInfo::isArtMode()
 int JniInfo::getSdkVersion()
 {
     char value[PROP_VALUE_MAX];
-    if(system_property_get("ro.build.version.sdk",value) <= 16){
+    if(__system_property_get("ro.build.version.sdk",value) <= 16){
         return -1;
     }
     int rel = 0;
