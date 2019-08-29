@@ -8,6 +8,7 @@
 #include "JniInfo.h"
 #include "JAsset.h"
 #include "dlfcn.h"
+
 bool makeDexElements(JNIEnv* env,jobject classLoader,const std::vector<jobject >& dexFile_objs);
 
 void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject context)
@@ -28,38 +29,44 @@ void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject conte
     jstring cachefilePath_jstr = env->NewStringUTF(cachefilePath.c_str());
     jstring cachefileOpt_jstr = env->NewStringUTF(cachefileOptPath.c_str());
 
-//    auto dexFile_obj = JniInfo::CallStaticObjectMethod(
-//            env, "dalivk/system/DexFile", "loadDex",
-//            "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;",
-//            cachefilePath_jstr, cachefileOpt_jstr, false
-//    );
+    /**
+     *  1、 Java层  太浅啦
+     */
+    auto dexFile_obj = JniInfo::CallStaticObjectMethod(
+            env, "dalivk/system/DexFile", "loadDex",
+            "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;",
+            cachefilePath_jstr, cachefileOpt_jstr, false
+    );
 
-    auto libdvm = dlopen("libdvm.so",RTLD_NOW);
-    auto dvm_dalvik_system_DexFile = (JNINativeMethod*)dlsym(libdvm,"dvm_dalvik_system_DexFile");
-    void (*fnOpenDexFileNative)(const u4* args,JValue* pResult) = nullptr;
-    for (auto p = dvm_dalvik_system_DexFile; p->fnPtr != nullptr ; p++) {
-        if (strcmp(p->name,"openDexFileNative") == 0 && strcmp(p->signature ,"(Ljava/lang/String;Ljava/lang/String;I)I") == 0) {
-            fnOpenDexFileNative = (void (*)(const u4* ,JValue*))p->fnPtr;
-            break;
-        }
-    }
-
-    DexOrJar* pDexOrJar = nullptr;
-
-    if (fnOpenDexFileNative != nullptr){
-        auto dvmCreateStringFromCst = (void* (*)(const char* utf8Str))dlsym(libdvm,"_Z23dvmCreateStringFromCstPKc");
-        u4 args[2];
-        args[0] = static_cast<u4>(dvmCreateStringFromCst(cachefileOptPath.c_str()));
-        args[1] = static_cast<u4>(dvmCreateStringFromCst(cachefileOptPath.c_str()));
-        JValue result;
-        fnOpenDexFileNative(args,&result);
-        pDexOrJar = (DexOrJar *) result.l;
-
-    }
-
-    auto dexFile_cla = env->FindClass("dalvik/system/DexFile");
-    auto dexFile_obj = env->AllocObject(dexFile_cla);
-    JniInfo::SetObjectFIELD(env,dexFile_obj,"mCookie","I", static_cast<jint>(reinterpret_cast<uintptr_t>(pDexOrJar)));
+    /**
+     * 2、 调用Native层
+     */
+//    auto libdvm = dlopen("libdvm.so",RTLD_NOW);
+//    auto dvm_dalvik_system_DexFile = (JNINativeMethod*)dlsym(libdvm,"dvm_dalvik_system_DexFile");
+//    void (*fnOpenDexFileNative)(const u4* args,JValue* pResult) = nullptr;
+//    for (auto p = dvm_dalvik_system_DexFile; p->fnPtr != nullptr ; p++) {
+//        if (strcmp(p->name,"openDexFileNative") == 0 && strcmp(p->signature ,"(Ljava/lang/String;Ljava/lang/String;I)I") == 0) {
+//            fnOpenDexFileNative = (void (*)(const u4* ,JValue*))p->fnPtr;
+//            break;
+//        }
+//    }
+//
+//    DexOrJar* pDexOrJar = nullptr;
+//
+//    if (fnOpenDexFileNative != nullptr){
+//        auto dvmCreateStringFromCst = (void* (*)(const char* utf8Str))dlsym(libdvm,"_Z23dvmCreateStringFromCstPKc");
+//        u4 args[2];
+//        args[0] = static_cast<u4>(dvmCreateStringFromCst(cachefileOptPath.c_str()));
+//        args[1] = static_cast<u4>(dvmCreateStringFromCst(cachefileOptPath.c_str()));
+//        JValue result;
+//        fnOpenDexFileNative(args,&result);
+//        pDexOrJar = (DexOrJar *) result.l;
+//
+//    }
+//
+//    auto dexFile_cla = env->FindClass("dalvik/system/DexFile");
+//    auto dexFile_obj = env->AllocObject(dexFile_cla);
+//    JniInfo::SetObjectFIELD(env,dexFile_obj,"mCookie","I", static_cast<jint>(reinterpret_cast<uintptr_t>(pDexOrJar)));
 
     auto classLoader_obj = JniInfo::CallObjectMethod(env,context,"getClassLoader","()Ljava/lang/String;");
 

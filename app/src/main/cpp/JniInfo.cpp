@@ -144,19 +144,48 @@ bool JniInfo::is64Bit()
     }
 }
 
-//expended jni bridge
-#define CALL_VIRTUAL(_ctype,_jname,_retfail) \
-    _ctype JniInfo::Call##_jname##Method(JNIEnv* env,jobject obj,const char* name,const char* sig,...)  \
-{   \
+namespace JniInfo{
+#define JniInfo_CALLTYPE(_jtype,_jname)                     \
+    _jtype Call##_jname##Method(JNIEnv* env,jobject obj,    \
+        const char* name, const char* sig,...);             {  \
+                                                                        \
+        }                                                                               \
+    _jtype Call##_jname##MethodV(JNIEnv* env,jobject obj,    \
+        const char* name, const char* sig,va_list args){    \
+                                                                    \
+        }    \
+    _jtype Call##_jname##MethodA(JNIEnv* env,jobject obj,    \
+        const char* name, const char* sig,jvalue* args){        \
+                                                                \
+        }
+
+#define JniInfo_CALL_NONVIRT_TYPE(_ctype,_jname,_retfail) \
+    _ctype JniInfo::CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj ,const char* classSig,const char* name,const char* sig,...) \
+{      \
     va_list args;                       \
     va_start(args,sig);                 \
     VarArgs vargs(args);                \
     va_end(args);                       \
-    return Call##_jname##Method(env,obj,name,sign,vargs);  \
+    return CallNonvirtual##_jname##MethodV(env,obj,classSig,name,sig,vargs);  \
+} \
+_ctype JniInfo::CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj ,const char* classSig,const char* name,const char* sig,...) \
+{\
 }
 
+}
+
+//expended jni bridge
 
 
+//#define CALL_VIRTUAL(_ctype,_jname,_retfail) \
+//    _ctype JniInfo::Call##_jname##Method(JNIEnv* env,jobject obj,const char* name,const char* sig,...)  \
+//{   \
+//    va_list args;                       \
+//    va_start(args,sig);                 \
+//    VarArgs vargs(args);                \
+//    va_end(args);                       \
+//    return Call##_jname##Method(env,obj,name,sign,vargs);  \
+//}
 
 
 jobject JniInfo::getApplicatoinContext(JNIEnv *env)

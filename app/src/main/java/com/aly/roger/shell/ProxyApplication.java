@@ -22,6 +22,8 @@ public class ProxyApplication extends Application {
     private static final String ActivityThreadName = "android.app.ActivityThread";
     private static final String LoadedApkName = "android.app.LoadedApk";
 
+    protected native void fromNative();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -69,7 +71,6 @@ public class ProxyApplication extends Application {
 //
 //        return ;
 //    }
-
 
     @Override
     protected native void attachBaseContext(Context base);
