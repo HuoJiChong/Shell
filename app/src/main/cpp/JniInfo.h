@@ -209,63 +209,112 @@ namespace JniInfo{
     std::string jstrToCstr(JNIEnv* env,jstring jstr);
     int getTracePid();
 
-#define JniInfo_CALLTYPE(_jtype,_jname)                     \
-    _jtype Call##_jname##Method(JNIEnv* env,jobject obj,    \
-        const char* name, const char* sig,...);             \
-    _jtype Call##_jname##MethodV(JNIEnv* env,jobject obj,    \
-        const char* name, const char* sig,va_list args);    \
-    _jtype Call##_jname##MethodA(JNIEnv* env,jobject obj,    \
-        const char* name, const char* sig,jvalue* args);
+//成员方法
+#define JNIINFO_CALL_TYPE_METHOD(_jtype, _jname)                                    \
+                                                              \
+    _jtype Call##_jname##Method(JNIEnv* env,jobject obj,const char* methodName, const char* methodSig, ...) ;
 
-    JniInfo_CALLTYPE(jobject,Object);
-    JniInfo_CALLTYPE(jboolean,Boolean);
-    JniInfo_CALLTYPE(jbyte ,Byte);
-    JniInfo_CALLTYPE(jchar ,Char);
-    JniInfo_CALLTYPE(jshort ,Short);
-    JniInfo_CALLTYPE(jint ,Int);
-    JniInfo_CALLTYPE(jlong ,Long);
-    JniInfo_CALLTYPE(jfloat ,Float);
-    JniInfo_CALLTYPE(jdouble ,Double);
-    JniInfo_CALLTYPE(void,Void);
+#define JNIINFO_CALL_TYPE_METHODV(_jtype, _jname)                                   \
+                                                              \
+    _jtype Call##_jname##MethodV(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig,           \
+        va_list args)  ;
+#define JNIINFO_CALL_TYPE_METHODA(_jtype, _jname)                                   \
+                                                              \
+    _jtype Call##_jname##MethodA(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig,           \
+        jvalue* args);
 
-#define JniInfo_CALL_NONVIRT_TYPE(_jtype,_jname)                     \
-    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,    \
-        const char* clazzSig,const char* name, const char* sig,...);   \
-    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj,    \
-        const char* clazzSig,const char* name, const char* sig,va_list args);    \
-    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj,    \
-        const char* clazzSig,const char* name, const char* sig,jvalue* args);
 
-    JniInfo_CALL_NONVIRT_TYPE(jobject,Object);
-    JniInfo_CALL_NONVIRT_TYPE(jboolean,Boolean);
-    JniInfo_CALL_NONVIRT_TYPE(jbyte ,Byte);
-    JniInfo_CALL_NONVIRT_TYPE(jchar ,Char);
-    JniInfo_CALL_NONVIRT_TYPE(jshort ,Short);
-    JniInfo_CALL_NONVIRT_TYPE(jint ,Int);
-    JniInfo_CALL_NONVIRT_TYPE(jlong ,Long);
-    JniInfo_CALL_NONVIRT_TYPE(jfloat ,Float);
-    JniInfo_CALL_NONVIRT_TYPE(jdouble ,Double);
-    JniInfo_CALL_NONVIRT_TYPE(void,Void);
+#define JNIINFO_CALL_TYPE(_jtype, _jname)                                           \
+    JNIINFO_CALL_TYPE_METHOD(_jtype, _jname)                                        \
+    JNIINFO_CALL_TYPE_METHODV(_jtype, _jname)                                       \
+    JNIINFO_CALL_TYPE_METHODA(_jtype, _jname)
 
-#define JniInfo_CALL_STATIC_TYPE(_jtype,_jname)                     \
-    _jtype CallStatic##_jname##Method(JNIEnv* env,   \
-        const char* clazzSig,const char* name, const char* sig,...);   \
-    _jtype CallStatic##_jname##MethodV(JNIEnv* env,    \
-        const char* clazzSig,const char* name, const char* sig,va_list args);    \
-    _jtype CallStatic##_jname##MethodA(JNIEnv* env,    \
-        const char* clazzSig,const char* name, const char* sig,jvalue* args);
+    JNIINFO_CALL_TYPE(jobject, Object)
+    JNIINFO_CALL_TYPE(jboolean, Boolean)
+    JNIINFO_CALL_TYPE(jbyte, Byte)
+    JNIINFO_CALL_TYPE(jchar, Char)
+    JNIINFO_CALL_TYPE(jshort, Short)
+    JNIINFO_CALL_TYPE(jint, Int)
+    JNIINFO_CALL_TYPE(jlong, Long)
+    JNIINFO_CALL_TYPE(jfloat, Float)
+    JNIINFO_CALL_TYPE(jdouble, Double)
 
-    JniInfo_CALL_STATIC_TYPE(jobject,Object);
-    JniInfo_CALL_STATIC_TYPE(jboolean,Boolean);
-    JniInfo_CALL_STATIC_TYPE(jbyte ,Byte);
-    JniInfo_CALL_STATIC_TYPE(jchar ,Char);
-    JniInfo_CALL_STATIC_TYPE(jshort ,Short);
-    JniInfo_CALL_STATIC_TYPE(jint ,Int);
-    JniInfo_CALL_STATIC_TYPE(jlong ,Long);
-    JniInfo_CALL_STATIC_TYPE(jfloat ,Float);
-    JniInfo_CALL_STATIC_TYPE(jdouble ,Double);
-    JniInfo_CALL_STATIC_TYPE(void,Void);
+    void CallVoidMethod(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, ...);
 
+    void CallVoidMethodV(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, va_list args);
+
+    void CallVoidMethodA(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, jvalue* args);
+
+// 非虚方法
+#define JNIINFO_CALLNONVIRTUAL_TYPEMETHOD(_jtype, _jname)                                                                         \
+                                                                                                                            \
+    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,const char* methodName, const char* methodSig, ...) ;
+
+#define JNIINFO_CALLNONVIRTUAL_TYPEMETHODV(_jtype, _jname)                                                                         \
+                                                                                                                            \
+    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig, va_list args)  ;
+
+#define JNIINFO_CALLNONVIRTUAL_TYPEMETHODA(_jtype, _jname)                                                                         \
+                                                                                                                            \
+    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig, jvalue* args);
+
+#define JNIINFO_CALLNONVIRTUAL_TYPE(_jtype, _jname)                                           \
+    JNIINFO_CALLNONVIRTUAL_TYPEMETHOD(_jtype, _jname)                                        \
+    JNIINFO_CALLNONVIRTUAL_TYPEMETHODV(_jtype, _jname)                                       \
+    JNIINFO_CALLNONVIRTUAL_TYPEMETHODA(_jtype, _jname)
+
+    JNIINFO_CALLNONVIRTUAL_TYPE(jobject, Object)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jboolean, Boolean)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jbyte, Byte)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jchar, Char)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jshort, Short)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jint, Int)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jlong, Long)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jfloat, Float)
+    JNIINFO_CALLNONVIRTUAL_TYPE(jdouble, Double)
+
+    void CallNonvirtualVoidMethod(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, ...);
+
+    void CallNonvirtualVoidMethodV(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, va_list args);
+
+    void CallNonvirtualVoidMethodA(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, jvalue* args);
+
+
+// 静态方法
+#define JNIINFO_CALL_STATIC_TYPE(_jtype, _jname)                                    \
+                                                                                    \
+    _jtype CallStatic##_jname##Method(JNIEnv* env,jclass clazz,const char* methodName, const char* methodSig, ...) ;            \
+    _jtype CallStatic##_jname##Method(JNIEnv* env,const char* clazzName,const char* methodName,const char * methodSig, ...);    \
+    _jtype CallStatic##_jname##MethodV(JNIEnv* env,jclass clazz, const char* methodName, const char* methodSig, va_list args)  ; \
+    _jtype CallStatic##_jname##MethodV(JNIEnv* env,const char* clazzName,const char* methodName,const char * methodSig, va_list args);   \
+    _jtype CallStatic##_jname##MethodA(JNIEnv* env,jclass clazz, const char* methodName, const char* methodSig, jvalue* args); \
+    _jtype CallStatic##_jname##MethodA(JNIEnv* env,const char* clazzName,const char* methodName,const char * methodSig, jvalue* args);
+
+    JNIINFO_CALL_STATIC_TYPE(jobject,Object);
+    JNIINFO_CALL_STATIC_TYPE(jboolean,Boolean);
+    JNIINFO_CALL_STATIC_TYPE(jbyte ,Byte);
+    JNIINFO_CALL_STATIC_TYPE(jchar ,Char);
+    JNIINFO_CALL_STATIC_TYPE(jshort ,Short);
+    JNIINFO_CALL_STATIC_TYPE(jint ,Int);
+    JNIINFO_CALL_STATIC_TYPE(jlong ,Long);
+    JNIINFO_CALL_STATIC_TYPE(jfloat ,Float);
+    JNIINFO_CALL_STATIC_TYPE(jdouble ,Double);
+
+
+    void CallStaticVoidMethodV(JNIEnv* env,jclass clazz,   const char* methodName, const char* methodSig, va_list args);
+
+    void CallStaticVoidMethodV(JNIEnv* env,const char*  clazzName,   const char* methodName, const char* methodSig, va_list args);
+
+    void CallStaticVoidMethod(JNIEnv* env,jclass clazz,   const char* methodName, const char* methodSig, ...);
+
+    void CallStaticVoidMethod(JNIEnv* env,const char* clazzName,   const char* methodName, const char* methodSig, ...);
+
+    void CallStaticVoidMethodA(JNIEnv* env,jclass clazz,   const char* methodName, const char* methodSig, jvalue* args);
+
+    void CallStaticVoidMethodA(JNIEnv* env,const char* clazzName,   const char* methodName, const char* methodSig, jvalue* args);
+
+
+//    获得对象的属性
 #define JniInfo_GetFIELD(_jtype,_jname)                     \
     _jtype Get##_jname##FIELD(JNIEnv* env,jobject obj,    \
         const char* name, const char* sig);        \
@@ -283,14 +332,17 @@ namespace JniInfo{
     JniInfo_GetFIELD(jdouble ,Double);
     JniInfo_GetFIELD(jobjectArray ,ObjectArray);
 
+    /**
+     * 在函数中定义了返回值，却没有返回会崩溃，Fatal signal 4 (SIGILL)
+     */
+//    设置对象的属性
 #define JniInfo_SetFIELD(_jtype,_jname)                     \
-    _jtype Set##_jname##FIELD(JNIEnv* env,jobject obj,    \
+    void Set##_jname##FIELD(JNIEnv* env,jobject obj,    \
         const char* name, const char* sig,_jtype value);        \
-    _jtype SetStatic##_jname##FIELD(JNIEnv* env,jobject obj,    \
+    void SetStatic##_jname##FIELD(JNIEnv* env,jobject obj,    \
         const char* clazzSig,const char* name, const char* sig,_jtype value);
 
-//    jobject SetObjectFIELD(JNIEnv *env, jobject obj, const char name[12], const char sig[37],
-//                               jobjectArray pArray);
+    JniInfo_SetFIELD(jobject ,Object);
     JniInfo_SetFIELD(jboolean,Boolean);
     JniInfo_SetFIELD(jbyte ,Byte);
     JniInfo_SetFIELD(jchar ,Char);
@@ -299,7 +351,6 @@ namespace JniInfo{
     JniInfo_SetFIELD(jlong ,Long);
     JniInfo_SetFIELD(jfloat ,Float);
     JniInfo_SetFIELD(jdouble ,Double);
-    JniInfo_SetFIELD(jobjectArray ,Object);
 
 }
 

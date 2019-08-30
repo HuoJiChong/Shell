@@ -16,6 +16,7 @@ void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject conte
     JniInfo::CallNonvirtualVoidMethod(env,obj,"android/content/ContextWrapper","attachBaseContext","(Landroid/content/Context;)V",context);
 
     if (!JniInfo::init(env,context)){
+        LOGE("%s","JniInfo::init() failed");
         return;
     }
 

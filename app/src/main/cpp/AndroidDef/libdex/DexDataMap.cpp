@@ -21,6 +21,7 @@
 #include "DexDataMap.h"
 //#include <safe_iop.h>
 #include <stdlib.h>
+#include "BaseDef.h"
 
 /*
  * Allocate and initialize a DexDataMap. Returns NULL on failure.
@@ -38,8 +39,8 @@ DexDataMap* dexDataMapAlloc(u4 maxCount) {
      * Avoiding pulling in safe_iop for safe_iopf.
      */
 
-    if (!safe_mul(&size, maxCount, sizeof(u4) + sizeof(u2)) ||
-        !safe_add(&size, size, sizeof(DexDataMap))) {
+    if (!safe_mul((unsigned *)&size, maxCount, sizeof(u4) + sizeof(u2)) ||
+        !safe_add((unsigned * )&size, size, sizeof(DexDataMap))) {
       return NULL;
     }
 
