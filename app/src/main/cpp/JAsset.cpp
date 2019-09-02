@@ -55,12 +55,15 @@ namespace JAsset{
 
             if (fp != NULL){
                 int fd = fileno(fp);
+//                修改权限
                 fchmod(fd,mode);
                 auto fileLen = AAsset_getLength(pFile);
                 char buf[1024];
                 int iRead;
-                while ((iRead = AAsset_read(pFile,buf,1024)) !=  EOF){
+                LOGI("%s"," 开始读取文件 ");
+                while ((iRead = AAsset_read(pFile,buf,1024)) > 0 ){
                     fwrite(buf,1,iRead,fp);
+                    LOGI("读取到的文件大小： %d",iRead);
                 }
                 fclose(fp);
             }else{

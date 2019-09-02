@@ -75,8 +75,13 @@ bool JniInfo::init(JNIEnv *env, jobject context_obj)
     env->DeleteLocalRef(filesDir_jstr);
 
 //    setup cachePath (and mkdir if not exist)
-    cachePath = filePath.substr(0,filePath.find_last_of('/')) + "/cache";
-    mkdir(cachePath.c_str(),0700);
+//    cachePath = filePath.substr(0,filePath.find_last_of('/')) + "/cache";
+    jobject cacheDir_obj = CallObjectMethod(env,context_obj,"getCacheDir","()Ljava/io/File;");
+    jstring cacheDir_jstr = (jstring)CallObjectMethod(env,cacheDir_obj,"getAbsolutePath","()Ljava/lang/String;");
+    cachePath = jstrToCstr(env,cacheDir_jstr);
+    env->DeleteLocalRef(cacheDir_obj);
+    env->DeleteLocalRef(cacheDir_jstr);
+    mkdir(cachePath.c_str(),S_IRWXU);
 
     FLOGD("============== Global Jni Information Begin ===============");
     FLOGD("packageName %s",packageName.c_str());

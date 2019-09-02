@@ -23,7 +23,7 @@ void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject conte
 
     auto assetManager = JAsset::getAssetManagerFromCtx(env,context);
 
-    JAsset::releaseEncryptFileIntoCache(assetManager,"encrypt.dex",0444);
+    JAsset::releaseEncryptFileIntoCache(assetManager,"encrypt.dex",0666);
 
     std::string cachefilePath = JniInfo::cachePath + "/encrypt.dex";
     std::string cachefileOptPath = JniInfo::cachePath + "/encrypt.odex";
@@ -70,7 +70,7 @@ void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject conte
 //    auto dexFile_obj = env->AllocObject(dexFile_cla);
 //    JniInfo::SetObjectFIELD(env,dexFile_obj,"mCookie","I", static_cast<jint>(reinterpret_cast<uintptr_t>(pDexOrJar)));
 
-    auto classLoader_obj = JniInfo::CallObjectMethod(env,context,"getClassLoader","()Ljava/lang/String;");
+    auto classLoader_obj = JniInfo::CallObjectMethod(env,context,"getClassLoader","()Ljava/lang/ClassLoader;");
 
     std::vector<jobject > dexFile_objs;
     dexFile_objs.push_back(dexFile_obj);
@@ -88,7 +88,7 @@ bool makeDexElements(JNIEnv* env,jobject classLoader,const std::vector<jobject >
 
     jobject pathList_obj = JniInfo::GetObjectFIELD(env,classLoader,"pathList","Ldalvik/system/DexPathList;");
 
-    jobjectArray dexElements_obj = (jobjectArray)JniInfo::GetObjectFIELD(env,pathList_obj,"dexElements","[Ldalvik/system/DexPathList$Element;]");
+    jobjectArray dexElements_obj = (jobjectArray)JniInfo::GetObjectFIELD(env,pathList_obj,"dexElements","[Ldalvik/system/DexPathList$Element;");
 
     jint dexElementCount = env->GetArrayLength(dexElements_obj);
     jint dexElementNewCount = dexElementCount + dexFile_objs.size();
