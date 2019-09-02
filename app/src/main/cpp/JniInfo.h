@@ -248,15 +248,15 @@ namespace JniInfo{
 // 非虚方法
 #define JNIINFO_CALLNONVIRTUAL_TYPEMETHOD(_jtype, _jname)                                                                         \
                                                                                                                             \
-    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,const char* methodName, const char* methodSig, ...) ;
+    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,const char* classSig,const char* methodName, const char* methodSig, ...) ;
 
 #define JNIINFO_CALLNONVIRTUAL_TYPEMETHODV(_jtype, _jname)                                                                         \
                                                                                                                             \
-    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig, va_list args)  ;
+    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj,const char* classSig, const char* methodName, const char* methodSig, va_list args)  ;
 
 #define JNIINFO_CALLNONVIRTUAL_TYPEMETHODA(_jtype, _jname)                                                                         \
                                                                                                                             \
-    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig, jvalue* args);
+    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj,const char* classSig, const char* methodName, const char* methodSig, jvalue* args);
 
 #define JNIINFO_CALLNONVIRTUAL_TYPE(_jtype, _jname)                                           \
     JNIINFO_CALLNONVIRTUAL_TYPEMETHOD(_jtype, _jname)                                        \
@@ -273,11 +273,11 @@ namespace JniInfo{
     JNIINFO_CALLNONVIRTUAL_TYPE(jfloat, Float)
     JNIINFO_CALLNONVIRTUAL_TYPE(jdouble, Double)
 
-    void CallNonvirtualVoidMethod(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, ...);
+    void CallNonvirtualVoidMethod(JNIEnv* env,jobject obj, const char* classSig,  const char* methodName, const char* methodSig, ...);
 
-    void CallNonvirtualVoidMethodV(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, va_list args);
+    void CallNonvirtualVoidMethodV(JNIEnv* env,jobject obj, const char* classSig,  const char* methodName, const char* methodSig, va_list args);
 
-    void CallNonvirtualVoidMethodA(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, jvalue* args);
+    void CallNonvirtualVoidMethodA(JNIEnv* env,jobject obj, const char* classSig,  const char* methodName, const char* methodSig, jvalue* args);
 
 
 // 静态方法

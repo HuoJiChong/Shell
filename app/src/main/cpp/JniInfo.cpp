@@ -57,32 +57,28 @@ bool JniInfo::init(JNIEnv *env, jobject context_obj)
     packageName = jstrToCstr(env,pkgName_jstr);
     env->DeleteLocalRef(pkgName_jstr);
 
-    jstring apkPath_jstr = (jstring)CallObjectMethod(
-            env,context_obj,"getPackageResourcePath","()Ljava/lang/String");
+    jstring apkPath_jstr = (jstring)CallObjectMethod(env,context_obj,"getPackageResourcePath","()Ljava/lang/String;");
     apkPath = jstrToCstr(env,apkPath_jstr);
     env->DeleteLocalRef(apkPath_jstr);
 
-    jstring appInfo_jstr = (jstring)CallObjectMethod(
-            env,context_obj,"getApplicationInfo","()Landroid/content/pm/ApplicationInfo;");
-    jstring nativeLibraryDir_jstr = (jstring)GetObjectFIELD(
-            env,context_obj,"nativeLibraryDir","Ljava/lang/String;");
+    jobject appInfo_jstr = (jstring)CallObjectMethod(env,context_obj,"getApplicationInfo","()Landroid/content/pm/ApplicationInfo;");
+    jstring nativeLibraryDir_jstr = (jstring)GetObjectFIELD(env,appInfo_jstr,"nativeLibraryDir","Ljava/lang/String;");
     libPath = jstrToCstr(env,nativeLibraryDir_jstr);
     env->DeleteLocalRef(appInfo_jstr);
     env->DeleteLocalRef(nativeLibraryDir_jstr);
 
 //    get file data path
-    jobject filesDir_obj = CallObjectMethod(
-            env,context_obj,"getFilesDir","()Ljava/io/File;");
+    jobject filesDir_obj = CallObjectMethod(env,context_obj,"getFilesDir","()Ljava/io/File;");
     jstring filesDir_jstr = (jstring)CallObjectMethod(env,filesDir_obj,"getAbsolutePath","()Ljava/lang/String;");
     filePath = jstrToCstr(env,filesDir_jstr);
     env->DeleteLocalRef(filesDir_obj);
     env->DeleteLocalRef(filesDir_jstr);
 
 //    setup cachePath (and mkdir if not exist)
-    cachePath = filePath.substr(0,filePath.find('/')) + "/.cache";
+    cachePath = filePath.substr(0,filePath.find_last_of('/')) + "/cache";
     mkdir(cachePath.c_str(),0700);
 
-    FLOGD("============== Global Jni Information End ===============");
+    FLOGD("============== Global Jni Information Begin ===============");
     FLOGD("packageName %s",packageName.c_str());
     FLOGD("apkPath %s",apkPath.c_str());
     FLOGD("libPath %s",libPath.c_str());
@@ -235,33 +231,30 @@ namespace JniInfo{
 
 #define JNIINFO_CALLNONVIRTUAL_TYPE_METHOD(_jtype, _jname)                  \
                                                                             \
-    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,          \
-                    const char* methodName, const char* methodSig, ...)  \
+    _jtype CallNonvirtual##_jname##Method(JNIEnv* env,jobject obj,const char* classSig,  const char* methodName, const char* methodSig, ...)  \
     {                                                                       \
         _jtype result;                                                      \
         va_list args;                                                       \
         va_start(args, methodSig);                                          \
-        result = CallNonvirtual##_jname##MethodV(env, obj, methodName,methodSig,args);  \
+        result = CallNonvirtual##_jname##MethodV(env, obj,classSig, methodName,methodSig,args);  \
         va_end(args);                                                       \
         return result;                                                     \
     }
 
 #define JNIINFO_CALLNONVIRTUAL_TYPE_METHODV(_jtype, _jname)                 \
                                                               				\
-    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj, const char* methodName, const char* methodSig,           \
-        va_list args)                                                       \
+    _jtype CallNonvirtual##_jname##MethodV(JNIEnv* env,jobject obj,const char* classSig,  const char* methodName, const char* methodSig, va_list args)                                                       \
     {                                                                       \
-        jclass clazz = env->GetObjectClass(obj);                            \
+        jclass clazz = env->FindClass(classSig);                            \
         jmethodID methodID = env->GetMethodID(clazz,methodName,methodSig);  \
         return env->CallNonvirtual##_jname##MethodV(obj,clazz, methodID, args);     \
     }
 
 #define JNIINFO_CALLNONVIRTUAL_TYPE_METHODA(_jtype, _jname)                           \
                                                               				\
-    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj,  const char* methodName, const char* methodSig,           \
-        jvalue* args)                                                       \
+    _jtype CallNonvirtual##_jname##MethodA(JNIEnv* env,jobject obj,const char* classSig,   const char* methodName, const char* methodSig,jvalue* args)                                                       \
     { 																		\
-    	jclass clazz = env->GetObjectClass(obj);							\
+    	jclass clazz = env->FindClass(classSig);							\
     	jmethodID methodID = env->GetMethodID(clazz,methodName,methodSig);	\
     	return env->CallNonvirtual##_jname##MethodA( obj, clazz,methodID, args); 			\
     }
@@ -281,24 +274,27 @@ namespace JniInfo{
     JNIINFO_CALLNONVIRTUAL_TYPE(jfloat, Float)
     JNIINFO_CALLNONVIRTUAL_TYPE(jdouble, Double)
 
-    void CallNonvirtualVoidMethod(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, ...)
+    /**
+     *
+     */
+    void CallNonvirtualVoidMethod(JNIEnv* env,jobject obj,const char* classSig,   const char* methodName, const char* methodSig, ...)
     {
         va_list args;
         va_start(args, methodSig);
-        CallNonvirtualVoidMethodV(env,obj, methodName,methodSig, args);
+        CallNonvirtualVoidMethodV(env,obj,classSig, methodName,methodSig, args);
         va_end(args);
     }
 
-    void CallNonvirtualVoidMethodV(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, va_list args)
+    void CallNonvirtualVoidMethodV(JNIEnv* env,jobject obj, const char* classSig,  const char* methodName, const char* methodSig, va_list args)
     {
-        jclass clazz = env->GetObjectClass(obj);
+        jclass clazz = env->FindClass(classSig);
         jmethodID methodID = env->GetMethodID(clazz,methodName,methodSig);
         env->CallNonvirtualVoidMethodV(obj,clazz,methodID,args);
     }
 
-    void CallNonvirtualVoidMethodA(JNIEnv* env,jobject obj,   const char* methodName, const char* methodSig, jvalue* args)
+    void CallNonvirtualVoidMethodA(JNIEnv* env,jobject obj, const char* classSig,   const char* methodName, const char* methodSig, jvalue* args)
     {
-        jclass clazz = env->GetObjectClass(obj);
+        jclass clazz = env->FindClass(classSig);
         jmethodID methodID = env->GetMethodID(clazz,methodName,methodSig);
         env->CallNonvirtualVoidMethodA(obj,clazz,methodID,args);
     }

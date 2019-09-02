@@ -8,6 +8,7 @@
 #include <cstring>
 #include <string>
 #include <sys/stat.h>
+#include <errno.h>
 
 namespace JAsset{
 
@@ -52,7 +53,7 @@ namespace JAsset{
             std::string relPath = JniInfo::cachePath + "/" + filename;
             auto fp = fopen(relPath.c_str(),"w+");
 
-            if (fp != MAP_FAILED){
+            if (fp != NULL){
                 int fd = fileno(fp);
                 fchmod(fd,mode);
                 auto fileLen = AAsset_getLength(pFile);
@@ -63,7 +64,7 @@ namespace JAsset{
                 }
                 fclose(fp);
             }else{
-                FLOGE("unable to write file %s ", relPath.c_str());
+                FLOGE("unable to write file %s %s", relPath.c_str() , strerror(errno));
             }
 
             AAsset_close(pFile);

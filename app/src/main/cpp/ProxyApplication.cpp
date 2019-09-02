@@ -13,6 +13,7 @@ bool makeDexElements(JNIEnv* env,jobject classLoader,const std::vector<jobject >
 
 void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject context)
 {
+    //调用父类的方法
     JniInfo::CallNonvirtualVoidMethod(env,obj,"android/content/ContextWrapper","attachBaseContext","(Landroid/content/Context;)V",context);
 
     if (!JniInfo::init(env,context)){
@@ -34,7 +35,7 @@ void ::ProxyApplication::attachBaseContext(JNIEnv* env,jobject obj,jobject conte
      *  1、 Java层  太浅啦
      */
     auto dexFile_obj = JniInfo::CallStaticObjectMethod(
-            env, "dalivk/system/DexFile", "loadDex",
+            env, "dalvik/system/DexFile", "loadDex",
             "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;",
             cachefilePath_jstr, cachefileOpt_jstr, false
     );
